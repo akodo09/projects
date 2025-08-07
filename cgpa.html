@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SGPA Calculator</title>
+  <link rel="stylesheet" href="cgpa.css" />
+
+</head>
+
+<body>
+
+  <div class="container">
+    <h2>SGPA Calculator</h2>
+    <form onsubmit="return false;">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Credits</th>
+            <th>Grade</th>
+          </tr>
+        </thead>
+        <tbody class="gpa">
+          <tr>
+            <td>1</td>
+            <td><input type="number" name="credits" min="1" max="10" required /></td>
+            <td>
+              <select name="grade" required>
+                <option value="">--Select--</option>
+                <option value="10">O</option>
+                <option value="9">A+</option>
+                <option value="8">A</option>
+                <option value="7">B+</option>
+                <option value="6">B</option>
+                <option value="5">C</option>
+                <option value="4">F</option>
+              </select>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="refresh-icon" onclick="location.reload();">
+  <img src="refresh.png" alt="Refresh" />
+</div>
+      <span id="gpa-value" style =" display: block; text-align: center; margin-top: 10px; color: rgb(21, 44, 221);" ></span>
+      <div class="btn">
+      <button type="button" class="add-btn" onclick="addSub()">Add Subject</button>
+      <button type="button" class="rmv-btn" onclick="rmvSub()">Remove Subject</button></div>
+      <button type="submit" onclick="score()" class="submit-btn">Submit</button>
+    </form>
+
+  </div>
+
+  <script>
+    let count = 2;
+
+    function addSub() {
+      const tbody = document.querySelector(".gpa");
+
+      const newRow = document.createElement("tr");
+      newRow.innerHTML = `
+        <td>${count++}</td>
+        <td><input type="number" name="credits" min="1" max="10" /></td>
+        <td>
+          <select name="grade">
+            <option value="">--Select--</option>
+            <option value="10">O</option>
+            <option value="9">A+</option>
+            <option value="8">A</option>
+            <option value="7">B+</option>
+            <option value="6">B</option>
+            <option value="5.5">C</option>
+            <option value="0">F</option>
+          </select>
+        </td>
+      `;
+
+      tbody.appendChild(newRow);
+    }
+    function score() {
+      const rows = document.querySelectorAll(".gpa tr");
+
+      let totalCredits = 0;
+      let marks = 0;
+
+      rows.forEach(row => {
+        const creditInput = row.querySelector('input[name="credits"]');
+        const gradeSelect = row.querySelector('select[name="grade"]');
+
+        let credit = parseFloat(creditInput.value);
+        let grade = parseFloat(gradeSelect.value);
+
+        if (isNaN(credit) || isNaN(grade)) {
+          credit = 0
+          grade = 0
+        }
+
+        totalCredits += credit;
+        marks += credit * grade;
+      });
+
+      const oldResult = document.getElementById("gpa-result");
+      if (oldResult) oldResult.remove();
+
+      const gpaDiv = document.createElement("div");
+      gpaDiv.style.marginTop = "15px";
+      gpaDiv.style.fontWeight = "bold";
+
+      if (totalCredits === 0) {
+        gpaDiv.textContent = "Please fill all credits and grades correctly.";
+      } else {
+        let gpa = marks / totalCredits;
+        document.getElementById("gpa-value").textContent = "Your SGPA is :" + gpa.toFixed(3);
+      }
+    }function rmvSub() {
+  const tbody = document.querySelector(".gpa");
+  const rows = tbody.querySelectorAll("tr");
+
+  if (rows.length > 1) {
+    tbody.removeChild(rows[rows.length - 1]);
+    count--; 
+  }
+}
+
+
+  </script>
+</body>
+
+</html>
